@@ -9,7 +9,7 @@ import time
 try:
     from __version__ import __version__
 except ModuleNotFoundError:
-    from findpi.__version__ import __version__
+    from plunder.__version__ import __version__
 
 
 def getInput(currentip, thread_count):
@@ -18,7 +18,7 @@ def getInput(currentip, thread_count):
     """
     currentnum = 1
     userinput = input(
-        f'What net to check? (default {currentip}): ') or currentip
+        f'What query do you want to run? (default {currentip}): ') or currentip
     start_time = time.time()
     print(f'\nChecking for delicious pi around {userinput}...')
     if userinput.endswith('/24'):
@@ -44,11 +44,11 @@ def prep():
     """
     Get the args and set them.
     """
-    parser = argparse.ArgumentParser(description='Ways to run findpi.')
-    parser.add_argument('-c', '--cores', type=int,
-                        help='cores to use for threads', dest="cores")
+    parser = argparse.ArgumentParser(description='How to run plunder.')
+    parser.add_argument('-q', '--query', help='Your query to search', dest="query", default=".php?id=1")
     parser.add_argument('-v', '--version', action='version',
                         version=__version__)
+    parser.add_argument('-j','--json', help='Output in JSON file, otherwise output to screen only.', dest="json_out", action='store_true', default=False)
     args = parser.parse_args()
     return args
 
@@ -68,13 +68,13 @@ def checkMacs(ip_address):
 
 
 logo = """
-  ______ _____ _   _ _____  _____ _____
- |  ____|_   _| \ | |  __ \|  __ \_   _|
- | |__    | | |  \| | |  | | |__) || |
- |  __|   | | | . ` | |  | |  ___/ | |
- | |     _| |_| |\  | |__| | |    _| |_
- |_|    |_____|_| \_|_____/|_|   |_____|
-
+                                         
+ ____ ____ ____ ____ ____ ____ ____      
+||P |||L |||U |||N |||D |||E |||R ||     
+||__|||__|||__|||__|||__|||__|||__||     
+|/__\|/__\|/__\|/__\|/__\|/__\|/__\|     
+                                         
+                                                                                                                                                        
 """
 
 
@@ -83,7 +83,7 @@ def main():
     Main function that runs everything.
     """
     args = prep()
-    getInput(currentIP, thread_count)
+    getInput(args.query)
 
 
 if __name__ == "__main__":
