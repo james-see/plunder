@@ -12,6 +12,7 @@ flake8 = "*"
 coverage = "*"
 google = "*"
 beautifulsoup4 = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8.2"

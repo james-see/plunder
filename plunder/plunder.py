@@ -6,13 +6,15 @@ import os
 import socket
 import sys
 import time
+import requests
+
 try:
     from __version__ import __version__
 except ModuleNotFoundError:
     from plunder.__version__ import __version__
 
 
-def getInput(currentip, thread_count):
+def getInput(query, proxy):
     """
     Get user input ip address or use default.
     """
@@ -43,6 +45,12 @@ def getInput(currentip, thread_count):
 def prep():
     """
     Get the args and set them.
+
+    args
+    ----
+    q or query for the search parameters you want to send
+    v or version for the current version
+    j or json to output to a json file
     """
     parser = argparse.ArgumentParser(description='How to run plunder.')
     parser.add_argument('-q', '--query', help='Your query to search', dest="query", default=".php?id=1")
@@ -53,28 +61,24 @@ def prep():
     return args
 
 
-def checkMacs(ip_address):
+def load_proxies(url):
     """
-    Checks if mac address found using get_mac_address threaded function.
-    Accepts: ip_address var as string
-    Returns: nothing
-    Prints: found ip of pi if found
+    Get's list of ip addresses from free proxy servers.
+    Accepts: url as string
+    Returns: list of ip addresses and ports
+    Prints: ip address and port used only in verbose mdoe
     """
-    macaddress = str()
-    th = threading.Thread(target=ThreadId, args=(ip_address, macaddress))
-    th.start()
-    th.join(timeout=0.5)
-    return
+    listofproxies = requests.get(url).text
+    lists = [x for x in listofproxies.split('\n') if "+" in x]
+    filtered = set(x.split()[0] for x in lists if x[0].isdigit())
+    return filtered
 
 
-logo = """
-                                         
+logo = """                                     
  ____ ____ ____ ____ ____ ____ ____      
 ||P |||L |||U |||N |||D |||E |||R ||     
 ||__|||__|||__|||__|||__|||__|||__||     
-|/__\|/__\|/__\|/__\|/__\|/__\|/__\|     
-                                         
-                                                                                                                                                        
+|/__\|/__\|/__\|/__\|/__\|/__\|/__\|                                                                                                                  
 """
 
 
@@ -83,7 +87,9 @@ def main():
     Main function that runs everything.
     """
     args = prep()
-    getInput(args.query)
+    proxyurl = 'http://spys.me/proxy.txt'
+    proxySet = load_proxies(proxyurl)
+    getInput(args.query, proxySet.pop())
 
 
 if __name__ == "__main__":
