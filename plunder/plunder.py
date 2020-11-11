@@ -20,20 +20,10 @@ def getInput(query, proxy):
     """
     currentnum = 1
     userinput = input(
-        f'What query do you want to run? (default {currentip}): ') or currentip
+        f'What query do you want to run? (default {query}): ') or query
     start_time = time.time()
-    print(f'\nChecking for delicious pi around {userinput}...')
-    if userinput.endswith('/24'):
-        limit = 255
-    if limit == 1:
-        checkip = userinput.rsplit('.', 1)[0] + f'.{currentnum}'
-        checkMacs(checkip)
-        print("--- %s seconds ---" % (time.time() - start_time))
-        sys.exit(0)
-    ip_list = []
-    # nice way to fill up the list with the full range
-    ip_list.extend([userinput.rsplit('.', 1)[0] +
-                    f'.{i}' for i in range(limit)])
+    print(f'\nGetting results from google for: {userinput}...')
+
     # multi-threading the modern way ;)
     with ThreadPoolExecutor(max_workers=thread_count) as executor:
         {executor.submit(checkMacs, ip) for ip in ip_list}
