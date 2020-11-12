@@ -1,12 +1,11 @@
 """Uses brand new features of Python 3"""
 import argparse
-import threading
-from concurrent.futures import ThreadPoolExecutor
 import os
 import socket
 import sys
 import time
 import requests
+from googlesearch import search 
 
 try:
     from __version__ import __version__
@@ -14,7 +13,7 @@ except ModuleNotFoundError:
     from plunder.__version__ import __version__
 
 
-def getInput(query, proxy):
+def getLinks(query, proxy):
     """
     Get user input ip address or use default.
     """
@@ -24,10 +23,9 @@ def getInput(query, proxy):
     start_time = time.time()
     print(f'\nGetting results from google for: {userinput}...')
 
-    # multi-threading the modern way ;)
-    with ThreadPoolExecutor(max_workers=thread_count) as executor:
-        {executor.submit(checkMacs, ip) for ip in ip_list}
-        executor.shutdown(wait=False)
+    links = []
+    for j in search(query, tld="co.in", num=100, stop=100, pause=2): 
+        links.append(j) 
     # always print the time it took to complete
     print("--- %s seconds ---" % (time.time() - start_time))
 
